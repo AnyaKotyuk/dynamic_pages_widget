@@ -97,7 +97,7 @@ class dynamic_pages_widget extends WP_Widget {
                 }
                 ?>
             </div>
-            <button class="add_page"><?php _e('Add page', 'uni-text'); ?></button>
+            <button class="add_page button widgets-chooser-cancel"><?php _e('Add page', 'uni-text'); ?></button>
             <script>
                 jQuery(document).ready(function () {
                     <?php if(!empty($pages)) { ?>pagesInWidget = <?php echo count($pages); ?> <?php } ?>
@@ -153,7 +153,7 @@ class dynamic_pages_widget extends WP_Widget {
                 $this->showInput($input, $n);
             }
             ?>
-           <span style="color: red; cursor: pointer" class="remove" onclick="jQuery(this).parent().remove(); jQuery('#pages_sidebar input[type=submit]').prop('disable', false)"><?php _e( 'Remove' ); ?></span>
+           <span class="remove" onclick="jQuery(this).parent().remove(); jQuery('#pages_sidebar input[type=submit]').prop('disable', false)"><?php _e( 'Remove' ); ?></span>
         </p>
         <?php
     }

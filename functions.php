@@ -11,7 +11,8 @@
  * @param $hook
  */
 function dynamic_pages_widget_enqueue_script() {
-    wp_enqueue_script( 'admin-dynamic-pages',	WIDGET_PATH.'assets/admin.js', array( 'jquery' ), date('Ymd'), true );
+    wp_enqueue_style('admin-dynamic-pages',	WIDGET_PATH.'assets/style.css');
+    wp_enqueue_script('admin-dynamic-pages',	WIDGET_PATH.'assets/admin.js', array('jquery'));
 }
 
 /**
