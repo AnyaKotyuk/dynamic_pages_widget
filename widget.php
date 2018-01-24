@@ -33,8 +33,8 @@ class dynamic_pages_widget extends WP_Widget {
         $sub_title = (isset($instance['sub_title']))?$instance['sub_title']:'';
 
         echo $args['before_widget'];
-//        if ( ! empty( $title ) )
-//            echo $args['before_title'] . $title . $args['after_title'];
+        if ( ! empty( $title ) )
+            echo $args['before_title'] . $title . $args['after_title'];
 
         $page_id = json_decode($instance['page_id'], true);
         $page_sub = json_decode($instance['page_sub'], true);
@@ -66,7 +66,6 @@ class dynamic_pages_widget extends WP_Widget {
      * @param array $instance
      */
     public function form( $instance ) {
-        dynamic_pages_widget_enqueue_script();
         wp_localize_script('admin-dynamic-pages', 'php', array('ajax_url' => admin_url('admin-ajax.php')));
         $title = (isset($instance['title']))?$instance['title']:__('Widget title', 'uni-text');
         $sub_title = (isset($instance['sub_title']))?$instance['sub_title']:__('Widget subtitle', 'uni-text');
@@ -140,19 +139,46 @@ class dynamic_pages_widget extends WP_Widget {
         $page_title = (isset($this->title_pages[$n]))?$this->title_pages[$n]:'';
         $page_sub = (isset($this->sub_pages[$n]))?$this->sub_pages[$n]:'';
         if ($n != 0 && empty($val)) return;
+
+        $inputs = array(
+                array('id' => 'page_name', 'label' => 'Start typing page name:', 'val' => get_the_title($val)),
+                array('id' => 'page_id', 'label' => 'Page id:', 'val' => $val),
+                array('id' => 'page_title', 'label' => 'You can change page title for widget:', 'val' => $page_title),
+                array('id' => 'page_sub', 'label' => 'This text will be under page link:', 'val' => $page_sub)
+        );
         ?>
-        <hr>
         <p>
-            <label for="<?php echo $this->get_field_id( 'page_id' ); echo '['.$n.']'; ?>"><?php _e( 'Page:' ); ?></label>
-            <input class="find widefat" id="<?php echo $this->get_field_id( 'page_id' ); echo '['.$n.']'; ?>" name="<?php echo $this->get_field_name( 'page_name' ); echo "[$n]"; ?>" type="text" value="<?php echo esc_attr(get_the_title($val)); ?>" />
-            <label class="hidden"><?php _e( 'Page id:' ); ?></label>
-            <input class="widefat hidden page-id" id="<?php echo $this->get_field_id( 'page_id' ); echo '['.$n.']'; ?>" name="<?php echo $this->get_field_name( 'page_id' ); echo "[$n]"; ?>" type="text" value="<?php echo esc_attr($val); ?>" />
-            <label><?php _e( 'Page name:' ); ?></label>
-            <input class="widefat page-title" id="<?php echo $this->get_field_id( 'page_title' ); echo '['.$n.']'; ?>" name="<?php echo $this->get_field_name( 'page_title' ); echo "[$n]"; ?>" type="text" value="<?php echo esc_attr($page_title); ?>" />
-             <label><?php _e( 'Page subtext:' ); ?></label>
-            <input class="widefat page-sub" id="<?php echo $this->get_field_id( 'page_sub' ); echo '['.$n.']'; ?>" name="<?php echo $this->get_field_name( 'page_sub' ); echo "[$n]"; ?>" type="text" value="<?php echo esc_attr($page_sub); ?>" />
-            <span style="color: red; cursor: pointer" class="remove" onclick="jQuery(this).parent().remove(); jQuery('#pages_sidebar input[type=submit]').prop('disable', false)"><?php _e( 'Remove' ); ?></span>
+            <?php
+            foreach ($inputs as$k=>$input) {
+                $this->showInput($input, $n);
+            }
+            ?>
+           <span style="color: red; cursor: pointer" class="remove" onclick="jQuery(this).parent().remove(); jQuery('#pages_sidebar input[type=submit]').prop('disable', false)"><?php _e( 'Remove' ); ?></span>
         </p>
         <?php
     }
+
+
+    /**
+     * Show input
+     *
+     * @param $input
+     * @param $n
+     */
+    private function showInput($input, $n)
+    {
+        if (empty($input['id'])) return;
+
+        ?>
+        <label for="<?php echo $this->get_field_id($input['id']); echo '['.$n.']'; ?>"><?php echo $input['label'] ?></label>
+        <input
+                class="<?php if($input['id'] == 'page_name') echo 'find'; ?> widefat"
+                id="<?php echo $this->get_field_id( $input['id'] ); echo '['.$n.']'; ?>"
+                name="<?php echo $this->get_field_name($input['id']); echo "[$n]"; ?>"
+                type="text" value="<?php echo esc_attr($input['val']); ?>"
+        />
+        <?
+    }
 }
+
+
