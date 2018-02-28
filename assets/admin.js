@@ -1,7 +1,7 @@
 
 
 var pagesInWidget = 0;
-jQuery(document).on('click', '#pages_sidebar .add_page', function () {
+jQuery(document).on('click', '.add_page', function () {
 
     if (typeof php != undefined) {
         pagesInWidget++;
@@ -22,12 +22,11 @@ jQuery(document).on('click', '#pages_sidebar .add_page', function () {
 
 jQuery(document).on('ready widget-updated', function(){
     if (typeof php != 'undefined') {
-        setSuggest(jQuery('#pages_sidebar .pages-block .find'));
+        setSuggest(jQuery('.pages-block .find'));
     }
 });
 
 function setSuggest(el) {
-    console.log('jQuery(\'#pages_sidebar .pages-block .find\')', jQuery('#pages_sidebar .pages-block .find'))
     jQuery(el).autocomplete({
         source: php.ajax_url + "?action=get_pages",
         select: function (event, ui) {

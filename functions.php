@@ -1,6 +1,6 @@
 <?php
 /**
- * Define function for Dynamic pages widget
+ * Define functions for Dynamic pages widget
  *
  *
  */
@@ -13,6 +13,7 @@
 function dynamic_pages_widget_enqueue_script() {
     wp_enqueue_style('admin-dynamic-pages',	WIDGET_PATH.'assets/style.css');
     wp_enqueue_script('admin-dynamic-pages',	WIDGET_PATH.'assets/admin.js', array('jquery'));
+    wp_localize_script('admin-dynamic-pages', 'php', array('ajax_url' => admin_url('admin-ajax.php')));
 }
 
 /**

@@ -17,8 +17,8 @@ class dynamic_pages_widget extends WP_Widget {
     {
         parent::__construct(
             'menu_sub_widget',
-            __('Page subpages Widget', 'uni-text'),
-            array('description' => __('Show subpages for current page', 'uni-text'),)
+            __('Dynamic pages Widget', 'uni-text'),
+            array('description' => __('Select pages,which you want to show', 'dp'),)
         );
     }
 
@@ -40,8 +40,7 @@ class dynamic_pages_widget extends WP_Widget {
         $page_sub = json_decode($instance['page_sub'], true);
         $page_title = json_decode($instance['page_title'], true);
         ?>
-        <div class="side-menu2-wrapper nofix">
-            <h4 class="side-menu2-title"><?php echo $title; ?></h4>
+        <div class="">
             <h5 class="side-menu2-title2"><?php echo $sub_title; ?></h5>
             <ul class="side-menu2">
             <?php foreach ($page_id as $k=>$item) {
@@ -50,7 +49,7 @@ class dynamic_pages_widget extends WP_Widget {
                     <a href="<?php echo get_permalink($item);?>">
                         <div><?php echo (isset($page_title[$k]))?$page_title[$k]:get_the_title($item);?></div>
                         <div><?php echo (isset($page_sub[$k]))?$page_sub[$k]:'';?></div>
-                        <div>Read more</div>
+                        <div><?php _e('Read more', 'dp'); ?></div>
                     </a>
                 </li>
             <? } ?>
@@ -66,21 +65,21 @@ class dynamic_pages_widget extends WP_Widget {
      * @param array $instance
      */
     public function form( $instance ) {
-        wp_localize_script('admin-dynamic-pages', 'php', array('ajax_url' => admin_url('admin-ajax.php')));
-        $title = (isset($instance['title']))?$instance['title']:__('Widget title', 'uni-text');
-        $sub_title = (isset($instance['sub_title']))?$instance['sub_title']:__('Widget subtitle', 'uni-text');
+        $title = (isset($instance['title']))?$instance['title']:__('Widget title', 'dp');
+        $sub_title = (isset($instance['sub_title']))?$instance['sub_title']:__('Widget subtitle', 'dp');
         $pages = (isset($instance['page_id']))?json_decode($instance['page_id'], true):null;
         $this->pages = $pages;
         $this->title_pages = (isset($instance['page_title']))?json_decode($instance['page_title'], true):null;
         $this->sub_pages = (isset($instance['page_sub']))?json_decode($instance['page_sub'], true):null;
 
         ?>
+        <input type="hidden" class="widget-updated">
         <p>
-            <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label>
+            <label for="<?php echo $this->get_field_id( 'title' ); ?>"><b><?php _e( 'Title:' ); ?></b></label>
             <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id( 'sub_title' ); ?>"><?php _e( 'Sub title:' ); ?></label>
+            <label for="<?php echo $this->get_field_id( 'sub_title' ); ?>"><b><?php _e( 'Sub title:' ); ?></b></label>
             <input class="widefat" id="<?php echo $this->get_field_id( 'sub_title' ); ?>" name="<?php echo $this->get_field_name( 'sub_title' ); ?>" type="text" value="<?php echo esc_attr( $sub_title ); ?>" />
         </p>
 
@@ -97,7 +96,7 @@ class dynamic_pages_widget extends WP_Widget {
                 }
                 ?>
             </div>
-            <button class="add_page button widgets-chooser-cancel"><?php _e('Add page', 'uni-text'); ?></button>
+            <button class="add_page button widgets-chooser-cancel"><?php _e('Add page', 'dp'); ?></button>
             <script>
                 jQuery(document).ready(function () {
                     <?php if(!empty($pages)) { ?>pagesInWidget = <?php echo count($pages); ?> <?php } ?>
@@ -153,7 +152,7 @@ class dynamic_pages_widget extends WP_Widget {
                 $this->showInput($input, $n);
             }
             ?>
-           <span class="remove" onclick="jQuery(this).parent().remove(); jQuery('#pages_sidebar input[type=submit]').prop('disable', false)"><?php _e( 'Remove' ); ?></span>
+           <span class="remove" onclick="jQuery(this).closest('form').find('.widget-updated').trigger('change'); jQuery(this).parent().remove();"><?php _e('Remove', 'dp'); ?></span>
         </p>
         <?php
     }
